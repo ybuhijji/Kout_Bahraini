@@ -17,6 +17,8 @@ jobs:
           distribution: temurin
           java-version: 21
       - name: Build
+        env:
+          FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
         run: |
           echo "Android SDK: $ANDROID_HOME"
           ZIP=$(find . -maxdepth 2 -name '*.zip' | head -1)
@@ -25,6 +27,7 @@ jobs:
           unzip -q "$ZIP" -d src
           cd "$(dirname "$(find src -name package.json -not -path '*/node_modules/*' -not -path '*/functions/*' | head -1)")"
           npm ci
+          if [ -n "$FIREBASE_CONFIG" ]; then node scripts/firebase-config.mjs write; else echo "No FIREBASE_CONFIG secret: offline build"; fi
           npm run build
           npx cap sync android
           cd android
