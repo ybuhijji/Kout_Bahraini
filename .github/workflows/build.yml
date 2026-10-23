@@ -12,6 +12,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          check-latest: false
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -19,15 +20,18 @@ jobs:
       - uses: android-actions/setup-android@v3
       - name: Build
         run: |
-          unzip -q kout-bahraini.zip
-          cd kout
+          ZIP=$(find . -maxdepth 2 -name '*.zip' | head -1)
+          echo "Using $ZIP"
+          ls -la
+          unzip -q "$ZIP" -d src
+          cd "$(dirname "$(find src -name package.json -not -path '*/node_modules/*' -not -path '*/functions/*' | head -1)")"
           npm ci
           npm run build
           npx cap sync android
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
-          cp app/build/outputs/apk/debug/app-debug.apk ../../kout-bahraini.apk
+          cp app/build/outputs/apk/debug/app-debug.apk $GITHUB_WORKSPACE/kout-bahraini.apk
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: build-${{ github.run_number }}
