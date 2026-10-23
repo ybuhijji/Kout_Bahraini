@@ -12,14 +12,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          check-latest: false
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
-      - uses: android-actions/setup-android@v3
       - name: Build
         run: |
+          echo "Android SDK: $ANDROID_HOME"
           ZIP=$(find . -maxdepth 2 -name '*.zip' | head -1)
           echo "Using $ZIP"
           ls -la
