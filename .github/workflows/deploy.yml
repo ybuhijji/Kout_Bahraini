@@ -23,4 +23,4 @@ jobs:
           export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/sa.json"
           echo "ANDROID_PACKAGE_NAME=bh.kout.game" > functions/.env
           npm --prefix functions ci
-          npx -y firebase-tools@15 deploy --only functions,firestore --project "$PROJECT" --non-interactive --force
+          npx -y firebase-tools@15 deploy --only functions,firestore,hosting --project "$PROJECT" --non-interactive --force
